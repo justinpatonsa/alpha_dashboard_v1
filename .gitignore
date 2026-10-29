@@ -1,0 +1,9 @@
+# Credentials stay out of source control (RFP §6: keep credentials outside source code and GitHub)
+.env
+node_modules/
+frontend/dist/
+__pycache__/
+*.db
+.outage
+archive/synthetic_prototype/data/
+.dev-login

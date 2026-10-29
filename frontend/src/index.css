@@ -1,0 +1,132 @@
+/* Alpha-specific additions to the Version 1 theme (theme/tokens.css, theme/dashboard.css).
+   Shared patterns stay in the theme; classes here use the al- prefix. */
+
+.recharts-wrapper:focus, .recharts-surface:focus, .recharts-wrapper *:focus { outline: none; }
+
+/* The page and the sidebar scroll without a visible scrollbar. Wide tables keep
+   theirs, since a hidden sideways scroll is easy to miss. */
+html, .al-nav { scrollbar-width: none; }
+html::-webkit-scrollbar, .al-nav::-webkit-scrollbar { display: none; }
+
+/* Shell */
+.ds-brand { gap: 11px; }
+.al-brand-name { font-size: 16px; letter-spacing: -.2px; }
+.al-inline-icon { display: inline-flex; align-items: center; gap: 4px; }
+.al-nav { display: flex; flex-direction: column; overflow-y: auto; }
+.al-nav-group + .al-nav-group { margin-top: 10px; padding-top: 6px; border-top: 1px solid var(--ds-rule); }
+.al-nav a > svg:first-child { flex-shrink: 0; }
+.al-nav-foot { margin-top: auto; padding: 16px 10px 4px; color: var(--ds-subtle); font-size: 10px; }
+
+/* Account popover */
+.al-signout { width: 100%; }
+
+/* Sign-in page */
+.al-login { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px 16px; background: var(--ds-canvas); }
+.al-login-card { width: 100%; max-width: 380px; overflow: hidden; background: white; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-panel); box-shadow: var(--ds-shadow-panel); }
+.al-login-brand { display: flex; align-items: center; gap: 12px; padding: 18px 24px; background: var(--ds-shell); color: white; border-bottom: 1px solid var(--ds-shell-border); }
+.al-login-brand strong { display: block; font-size: 16px; letter-spacing: -.2px; }
+.al-login-brand span { display: block; margin-top: 2px; color: #c5d4e2; font-size: 12px; }
+.al-login-form { display: grid; gap: 16px; padding: 24px 24px 28px; }
+.al-login-form h1 { margin: 0 0 2px; font-size: 22px; font-weight: 600; letter-spacing: -.4px; }
+.al-login-form .ds-message { margin: 0; }
+.al-login-form .ds-field input { width: 100%; min-width: 0; height: 36px; font-size: 13px; }
+.al-login-form .ds-button { min-height: 36px; margin-top: 4px; font-size: 13px; }
+.al-login-error { display: flex; align-items: flex-start; gap: 8px; color: var(--ds-negative); font-size: 12px; line-height: 1.5; }
+.al-login-error svg { flex-shrink: 0; margin-top: 2px; }
+.al-login-foot { margin: 0; color: var(--ds-subtle); font-size: 11px; }
+
+/* Page body: one rhythm between the blocks of a page. */
+.al-page { display: grid; gap: 20px; min-width: 0; }
+.al-page .ds-panel + .ds-panel, .al-page .ds-kpis { margin: 0; }
+.al-grid { display: grid; gap: 19px; min-width: 0; }
+.al-grid > .ds-panel { margin: 0; }
+.al-panel-body { padding: 0 20px 20px; }
+.ds-panel-head h2 { display: flex; align-items: center; }
+.fade-in { animation: al-fade .25s ease-out; }
+@keyframes al-fade { from { opacity: .35; } to { opacity: 1; } }
+
+/* Live status in the title band */
+.al-status { display: inline-flex; align-items: center; gap: 7px; color: var(--ds-subtle); font-size: 11px; white-space: nowrap; }
+.al-status b { color: var(--ds-text); font-weight: 600; }
+.al-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #b5c2cd; }
+.al-dot--live { background: var(--ds-positive); }
+.al-dot--wait { background: var(--ds-warning); }
+.al-dot--down { background: var(--ds-negative); }
+.al-status--down b { color: var(--ds-negative); }
+
+/* Filters */
+/* Native selects size to their longest option, so widths are fixed here. */
+.ds-filters.al-filters { gap: 12px 14px; }
+.al-filters .ds-field select { width: 140px; min-width: 0; }
+.al-period { display: flex; align-items: center; gap: 8px; color: var(--ds-muted); font-size: 12px; }
+.al-filters .al-period select { width: 108px; min-width: 0; height: var(--ds-control-height); padding: 0 8px; background: white; color: var(--ds-text); border: 1px solid #899eaf; border-radius: 3px; font-size: 12px; }
+
+/* Segmented switch, after the reference's Revenue / Net profit control */
+.al-switch { display: inline-flex; height: var(--ds-control-height); border: 1px solid #c5d0da; border-radius: var(--ds-radius-control); overflow: hidden; background: white; }
+.al-switch button { border: 0; background: none; color: #526b80; padding: 0 10px; font-size: 11px; }
+.al-switch button + button { border-left: 1px solid var(--ds-rule); }
+.al-switch button:hover { background: var(--ds-hover); }
+.al-switch button[aria-pressed="true"] { background: #e8f2fc; color: var(--ds-action-strong); font-weight: 600; box-shadow: inset 0 -2px var(--ds-action); }
+.al-switch--small { height: 26px; }
+.al-switch--small button { font-size: 10px; padding: 0 9px; }
+
+/* Definition tip: an info icon that opens on hover or keyboard focus */
+.al-info { position: relative; display: inline-flex; align-items: center; margin-left: 6px; vertical-align: middle; }
+.al-info > button { width: 18px; height: 18px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--ds-link); }
+.al-info > button:hover { background: var(--ds-hover); }
+.al-tip { position: fixed; z-index: var(--ds-z-overlay); padding: 10px 12px; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-popover); background: white; color: var(--ds-text); box-shadow: var(--ds-shadow-overlay); font-size: 12px; font-weight: 400; line-height: 1.55; letter-spacing: 0; text-transform: none; white-space: normal; text-align: left; pointer-events: none; }
+
+/* KPI strip with any number of measures */
+.ds-kpis.al-kpis { grid-template-columns: repeat(var(--al-kpi-count, 4), minmax(0, 1fr)); }
+.ds-kpi > span { display: flex; align-items: center; }
+.al-kpi-empty { color: #b5c2cd; }
+
+/* Blueprint: frames for figures that don't exist yet */
+.al-stage { position: relative; overflow: hidden; border: 1px dashed #c3d0db; border-radius: var(--ds-radius-control); background: #fafcfd; }
+
+/* Tables that hold sentences rather than figures */
+.ds-table.al-wrap th, .ds-table.al-wrap td { white-space: normal; vertical-align: top; line-height: 1.5; }
+.ds-table.al-wrap tbody th { font-weight: 600; color: var(--ds-text); }
+.ds-table td.al-num { font-weight: 600; }
+.al-code { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--ds-text); background: var(--ds-surface-muted); border: 1px solid var(--ds-rule); border-radius: 3px; padding: 1px 5px; }
+
+/* Status words: color supports the label and icon, never replaces them */
+.al-state { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.al-state--positive { color: var(--ds-positive); }
+.al-state--info { color: var(--ds-link); }
+.al-state--warning { color: var(--ds-warning); }
+.al-state--negative { color: var(--ds-negative); }
+.al-tag { display: inline-flex; align-items: center; height: 20px; padding: 0 7px; border: 1px solid currentColor; border-radius: 3px; background: white; font-size: 10px; font-weight: 600; white-space: nowrap; }
+
+/* Number inputs (cost model) */
+.al-input { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; height: 30px; padding: 0 8px; border: 1px solid #899eaf; border-radius: 3px; background: white; color: var(--ds-subtle); font-size: 11px; }
+.al-input:focus-within { outline: 2px solid var(--ds-action); outline-offset: 1px; }
+.al-input input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ds-text); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.al-input--filled { background: var(--ds-highlight); border-color: var(--ds-info-border); }
+
+/* Rows of label + content inside a panel */
+.al-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--ds-rule); font-size: 12px; }
+.al-row:first-child { border-top: 0; }
+.al-label { color: var(--ds-muted); font-size: 11px; }
+
+/* A number that changed on a poll is highlighted once, so the live update is visible. */
+.flash { animation: al-flash 2.4s ease-out; }
+@keyframes al-flash { from { background-color: var(--ds-info-bg); } to { background-color: white; } }
+
+@media (max-width: 850px) {
+  .al-grid { grid-template-columns: minmax(0, 1fr) !important; }
+}
+@media (max-width: 550px) {
+  .al-brand-name { font-size: 14px; }
+  .ds-kpis.al-kpis { grid-template-columns: 1fr 1fr; }
+  .al-kpis .ds-kpi { border-bottom: 1px solid var(--ds-rule); }
+  .al-kpis .ds-kpi::after { display: none; }
+  .al-kpis .ds-kpi:nth-child(odd) { border-right: 1px solid var(--ds-rule); }
+  .al-kpis .ds-kpi:last-child:nth-child(odd) { grid-column: 1 / -1; border-right: 0; }
+  /* Group filters two to a row; period and quick range take the full width. */
+  .al-filters > .ds-field { flex: 1 1 calc(50% - 7px); }
+  .al-filters > .ds-field[role="group"] { flex-basis: 100%; }
+  .al-filters .al-switch button { flex: 1; }
+  .al-filters .ds-field select { width: 100%; }
+  .al-filters .al-period select { flex: 1; width: auto; min-width: 0; }
+}
