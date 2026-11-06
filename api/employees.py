@@ -28,19 +28,28 @@ STATUSES = {
     "voluntary": "separation_type=eq.voluntary",
     "involuntary": "separation_type=eq.involuntary",
 }
+
+# Each sort key names the columns to order by; ties fall back to employee_id. Blanks
+# (a stayer's departure date) go last either way, except in the "on file" columns:
+# those order by the joined row's ID, and there a missing row counts as the lowest,
+# so employees without one come first going up and last going down.
 SORTS = {
-    "employee_id": "employee_id",
-    "department": "department",
-    "plant": "plant",
-    "job_role": "job_role",
-    "shift": "shift",
-    "hire_date": "hire_date",
-    "departure_date": "departure_date",
-    "satisfaction_level": "satisfaction_level",
-    "last_evaluation": "last_evaluation",
-    "average_monthly_hours": "average_monthly_hours",
-    "annual_base_pay_usd": "compensation_training(annual_base_pay_usd)",
+    "employee_id": ("employee_id",),
+    "status": ("left", "separation_type"),
+    "department": ("department",),
+    "plant": ("plant",),
+    "job_role": ("job_role",),
+    "shift": ("shift",),
+    "hire_date": ("hire_date",),
+    "departure_date": ("departure_date",),
+    "annual_base_pay_usd": ("compensation_training(annual_base_pay_usd)",),
+    "satisfaction_level": ("satisfaction_level",),
+    "last_evaluation": ("last_evaluation",),
+    "average_monthly_hours": ("average_monthly_hours",),
+    "survey": ("employee_surveys(survey_id)",),
+    "exit_interview": ("exit_interviews(exit_interview_id)",),
 }
+ON_FILE_SORTS = {"survey", "exit_interview"}
 PAGE_SIZES = (25, 50, 100)
 
 # The table view's columns; the full record asks for everything.
@@ -86,8 +95,9 @@ def page(client, q="", department="", plant="", status="", sort="employee_id", d
     # through; a space becomes LIKE's one-character wildcard, so "machine operator"
     # finds machine_operator.
     term = re.sub(r"[^A-Za-z0-9 ]", "", q).strip()[:24].replace(" ", "_")
-    params = [f"select={LIST_SELECT}",
-              f"order={SORTS[sort]}.{'desc' if desc else 'asc'}.nullslast,employee_id.asc",
+    nulls = "nullsfirst" if sort in ON_FILE_SORTS and not desc else "nullslast"
+    order = ",".join(f"{c}.{'desc' if desc else 'asc'}.{nulls}" for c in SORTS[sort])
+    params = [f"select={LIST_SELECT}", f"order={order},employee_id.asc",
               f"limit={size}", f"offset={(number - 1) * size}"]
     if term:
         params.append(f"or=(employee_id.ilike.*{term}*,job_role.ilike.*{term}*)")

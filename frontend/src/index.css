@@ -123,7 +123,7 @@ html::-webkit-scrollbar, .al-nav::-webkit-scrollbar { display: none; }
 .al-emp-table tbody tr.al-open > * { background: var(--ds-selected); }
 .al-emp-table.al-updating tbody { opacity: .55; transition: opacity .15s; }
 .al-sort { display: inline-flex; align-items: center; gap: 3px; padding: 0; border: 0; background: none; color: inherit; font: inherit; }
-.al-sort svg { opacity: 0; }
+.al-sort svg { flex-shrink: 0; opacity: .45; }
 .al-sort:hover svg, [aria-sort] .al-sort svg { opacity: 1; }
 [aria-sort] .al-sort { color: var(--ds-text); font-weight: 600; }
 .al-rowlink { padding: 0; border: 0; background: none; color: var(--ds-link); font: 600 11px ui-monospace, Menlo, monospace; }

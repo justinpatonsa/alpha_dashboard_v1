@@ -4,7 +4,7 @@
    page. Arrow keys step through the rows of the current page. */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  Search, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, X, Check, CheckCircle2, LogOut, Loader2,
+  Search, ChevronUp, ChevronDown, ChevronsUpDown, ChevronLeft, ChevronRight, X, Check, CheckCircle2, LogOut, Loader2,
 } from 'lucide-react'
 import { useLive } from '../live'
 import { Surface, fmtInt, fmtUSDFull } from '../ui'
@@ -47,10 +47,11 @@ const OnFile = ({ has }) => has
 
 // ── Table ─────────────────────────────────────────────────────────────────────
 
-// `sort` names the API's sort key; numeric columns sort high-to-low on first click.
+// `sort` names the API's sort key. Every column sorts both ways; numeric columns and the
+// status and on-file columns (`descFirst`) start high-to-low, text columns A–Z.
 const COLUMNS = [
   { label: 'Employee ID', sort: 'employee_id' },
-  { label: 'Status', render: r => <Status row={r} /> },
+  { label: 'Status', sort: 'status', descFirst: true, render: r => <Status row={r} /> },
   { label: 'Department', sort: 'department', render: r => words(r.department) },
   { label: 'Plant', sort: 'plant', render: r => words(r.plant) },
   { label: 'Job role', sort: 'job_role', render: r => words(r.job_role) },
@@ -61,8 +62,8 @@ const COLUMNS = [
   { label: 'Satisfaction', sort: 'satisfaction_level', number: true, render: r => fmtScore(r.satisfaction_level) },
   { label: 'Last evaluation', sort: 'last_evaluation', number: true, render: r => fmtScore(r.last_evaluation) },
   { label: 'Monthly hours', sort: 'average_monthly_hours', number: true, render: r => fmtInt(r.average_monthly_hours) },
-  { label: 'Survey', render: r => <OnFile has={r.employee_surveys} /> },
-  { label: 'Exit interview', render: r => r.left ? <OnFile has={r.exit_interviews} /> : <span className="al-dim">n/a</span> },
+  { label: 'Survey', sort: 'survey', descFirst: true, render: r => <OnFile has={r.employee_surveys} /> },
+  { label: 'Exit interview', sort: 'exit_interview', descFirst: true, render: r => r.left ? <OnFile has={r.exit_interviews} /> : <span className="al-dim">n/a</span> },
 ]
 
 const START = { q: '', department: '', plant: '', status: '', sort: 'employee_id', desc: false, page: 1, size: 50 }
@@ -100,7 +101,7 @@ export default function Employees() {
   const close = () => { refocus.current = open; setOpen(null) }
 
   const set = changes => { setOpen(null); setQuery(x => ({ ...x, page: 1, ...changes })) }
-  const toggleSort = (key, number) => set(query.sort === key ? { sort: key, desc: !query.desc } : { sort: key, desc: !!number })
+  const toggleSort = c => set(query.sort === c.sort ? { sort: c.sort, desc: !query.desc } : { sort: c.sort, desc: !!(c.number || c.descFirst) })
   const clear = () => { setSearch(''); set({ q: '', department: '', plant: '', status: '' }) }
 
   if (state.error) return <Unavailable detail={state.error} />
@@ -132,14 +133,15 @@ export default function Employees() {
             <thead>
               <tr>
                 {COLUMNS.map((c, i) => {
-                  const active = c.sort && query.sort === c.sort
-                  const Arrow = active && query.desc ? ChevronDown : ChevronUp
+                  const active = query.sort === c.sort
+                  const Arrow = !active ? ChevronsUpDown : query.desc ? ChevronDown : ChevronUp
                   return (
                     <th key={c.label} scope="col" className={c.number ? 'ds-number' : undefined} data-pin={i === 0 ? 'start' : undefined}
                       aria-sort={active ? (query.desc ? 'descending' : 'ascending') : undefined}>
-                      {c.sort
-                        ? <button type="button" className="al-sort" onClick={() => toggleSort(c.sort, c.number)}>{c.label}<Arrow size={12} /></button>
-                        : c.label}
+                      <button type="button" className="al-sort" onClick={() => toggleSort(c)}
+                        title={active ? `Sorted ${query.desc ? 'descending' : 'ascending'}; click to reverse` : `Sort by ${c.label.toLowerCase()}`}>
+                        {c.label}<Arrow size={12} />
+                      </button>
                     </th>
                   )
                 })}
