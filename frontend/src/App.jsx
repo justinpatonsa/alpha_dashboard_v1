@@ -11,13 +11,14 @@ import Where from './pages/Where'
 import Factors from './pages/Factors'
 import Voice from './pages/Voice'
 import Cost from './pages/Cost'
+import Employees from './pages/Employees'
 import Discovery from './pages/Discovery'
 import Definitions from './pages/Definitions'
 import Readiness from './pages/Readiness'
 
 const PAGES = {
   overview: Overview, where: Where, factors: Factors, voice: Voice, cost: Cost,
-  discovery: Discovery, definitions: Definitions, readiness: Readiness,
+  employees: Employees, discovery: Discovery, definitions: Definitions, readiness: Readiness,
 }
 const pageFromHash = () => {
   const h = window.location.hash.replace('#/', '').replace('#', '')

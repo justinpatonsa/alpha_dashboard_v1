@@ -33,17 +33,19 @@ export function filterParams(filters) {
   return p
 }
 
-/** Fetch `path` with the global filters; refetch on filter change and on each poll tick. */
-export function useLive(path) {
+/** Fetch `path` with the global filters, or with the page's own `params` when it
+    has them; refetch when those change and on each poll tick. */
+export function useLive(path, params) {
   const { filters, tick, report } = useLiveContext()
   const [state, setState] = useState({ data: null, error: null, loading: true })
   const seq = useRef(0)
-  const key = JSON.stringify(filters)
+  const query = params ?? filterParams(filters)
+  const key = JSON.stringify(query)
 
   useEffect(() => {
     const id = ++seq.current
     setState(s => ({ ...s, loading: true }))
-    API.get(path, { params: { ...filterParams(filters), _: Date.now() } })
+    API.get(path, { params: { ...query, _: Date.now() } })
       .then(r => {
         if (id !== seq.current) return
         setState({ data: r.data, error: null, loading: false })

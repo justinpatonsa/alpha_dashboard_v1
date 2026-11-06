@@ -9,6 +9,11 @@ returns a figure it can't stand behind:
                    here; it reports connection state and the query scope,
                    and `figures` stays null until metrics are mapped to
                    Alpha's confirmed fields (D1, week 2)
+  /api/employees   one page of employee records, the four tables joined on
+                   employee_id by Supabase (api/employees.py); searchable,
+                   filterable and sortable
+  /api/employees/{id}
+                   every field on one employee, for the record pop-up
   /api/login, /api/logout, /api/me
                    dashboard sign-in; every other /api/ route needs a session.
                    Accounts and sessions live in the team's own Postgres
@@ -30,7 +35,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 
-from api import auth
+from api import auth, employees
+from api.retrieval import RetrievalError
 from api.supabase_client import Client
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -152,6 +158,33 @@ def meta():
 @app.get("/api/discovery")
 def discovery():
     return {**supabase.discover(), "queried_at": stamp()}
+
+
+@app.get("/api/employees")
+def employee_page(q: str = "", department: str = "", plant: str = "", status: str = "",
+                  sort: str = "employee_id", desc: bool = False, page: int = 1, size: int = 50):
+    try:
+        result = employees.page(supabase, q, department, plant, status, sort, desc, page, size)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    except RetrievalError as e:
+        log.error("Employee page: %s", e)
+        raise HTTPException(503, "Database query failed")
+    return {**result, "options": employees.options(), "queried_at": stamp()}
+
+
+@app.get("/api/employees/{employee_id}")
+def employee_record(employee_id: str):
+    try:
+        row = employees.record(supabase, employee_id)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    except RetrievalError as e:
+        log.error("Employee record: %s", e)
+        raise HTTPException(503, "Database query failed")
+    if row is None:
+        raise HTTPException(404, "No employee with that ID")
+    return {"record": row, "queried_at": stamp()}
 
 
 @app.get("/api/view/{view}")
