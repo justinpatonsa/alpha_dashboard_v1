@@ -113,8 +113,83 @@ html::-webkit-scrollbar, .al-nav::-webkit-scrollbar { display: none; }
 .flash { animation: al-flash 2.4s ease-out; }
 @keyframes al-flash { from { background-color: var(--ds-info-bg); } to { background-color: white; } }
 
+/* Employees: a paged table whose rows open the full record */
+.al-emp-toolbar { gap: 10px 12px; }
+.al-emp-toolbar h2 { margin-right: 4px; }
+.al-count { color: var(--ds-subtle); font-weight: 400; }
+.al-select { height: var(--ds-control-height); max-width: 100%; padding: 0 8px; border: 1px solid #a6b7c5; border-radius: 3px; background: white; color: var(--ds-text); font-size: 11px; }
+.al-emp-scroll { max-height: calc(100vh - 300px); min-height: 320px; }
+.al-emp-table tbody tr { cursor: pointer; }
+.al-emp-table tbody tr.al-open > * { background: var(--ds-selected); }
+.al-emp-table.al-updating tbody { opacity: .55; transition: opacity .15s; }
+.al-sort { display: inline-flex; align-items: center; gap: 3px; padding: 0; border: 0; background: none; color: inherit; font: inherit; }
+.al-sort svg { opacity: 0; }
+.al-sort:hover svg, [aria-sort] .al-sort svg { opacity: 1; }
+[aria-sort] .al-sort { color: var(--ds-text); font-weight: 600; }
+.al-rowlink { padding: 0; border: 0; background: none; color: var(--ds-link); font: 600 11px ui-monospace, Menlo, monospace; }
+.al-rowlink:hover { text-decoration: underline; }
+.al-dim { color: #9aabb9; }
+.al-spin { animation: al-spin 1s linear infinite; }
+@keyframes al-spin { to { transform: rotate(360deg); } }
+.al-emp-foot { align-items: center; }
+.al-pager { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.al-pager .al-select { height: 26px; font-size: 10px; }
+.al-pager button { width: 26px; height: 26px; display: grid; place-items: center; padding: 0; border: 1px solid var(--ds-border); border-radius: 3px; background: white; color: var(--ds-link); }
+.al-pager button:hover:not(:disabled) { background: var(--ds-hover); }
+
+/* Record pop-up: a native modal dialog over a blurred, dimmed page */
+.ds-dialog.al-record { width: 1000px; max-width: calc(100vw - 48px); max-height: calc(100vh - 48px); display: flex; flex-direction: column; overflow: hidden; border-radius: var(--ds-radius-popover); background: white; }
+.ds-dialog.al-record:not([open]) { display: none; }
+.ds-dialog.al-record:focus { outline: none; }
+.al-record::backdrop { background: #152e4633; -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
+.al-record[open] { animation: al-record-in .2s ease-out; }
+.al-record[open]::backdrop { animation: al-fade .2s ease-out; }
+@keyframes al-record-in { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
+.al-record-head { display: flex; flex-shrink: 0; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 20px 24px 18px; border-bottom: 1px solid var(--ds-border); }
+.al-record-kicker { color: var(--ds-subtle); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.al-record-head h2 { margin: 5px 0 6px; font-size: 24px; font-weight: 600; letter-spacing: -.3px; }
+.al-record-head p { margin: 0; color: var(--ds-muted); font-size: 13px; }
+.al-record-actions { display: flex; align-items: center; gap: 6px; }
+.al-record-actions .al-state { margin-right: 12px; font-size: 12px; }
+.al-record-pos { margin-right: 4px; color: var(--ds-subtle); font-size: 11px; white-space: nowrap; }
+.al-iconbtn { width: 30px; height: 30px; display: grid; place-items: center; padding: 0; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-control); background: white; color: var(--ds-muted); }
+.al-iconbtn:hover:not(:disabled) { background: var(--ds-hover); color: var(--ds-link); }
+/* Basis auto, not flex: 1: the dialog has no set height, and Safari sizes a 0% basis to
+   nothing, leaving only the body's padding. Auto starts from the content and shrinks to fit. */
+.al-record-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 20px 24px 24px; background: var(--ds-canvas); }
+.al-record-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 16px; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-panel); background: white; }
+.al-record-kpis > div { display: grid; gap: 6px; padding: 15px 18px; }
+.al-record-kpis > div + div { border-left: 1px solid var(--ds-rule); }
+.al-record-kpis span { color: var(--ds-muted); font-size: 11px; }
+.al-record-kpis strong { font-size: 24px; font-weight: 500; letter-spacing: -.6px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.al-record-kpis small { color: var(--ds-subtle); font-size: 11px; }
+.al-record-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.al-record-col { display: grid; gap: 16px; min-width: 0; }
+.al-record-section { border: 1px solid var(--ds-border); border-radius: var(--ds-radius-panel); background: white; }
+.al-record-section > header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--ds-rule); }
+.al-record-section h3 { margin: 0; font-size: 13px; }
+.al-record-section dl { margin: 0; padding: 2px 16px 6px; }
+.al-record-note { margin: 0; padding: 10px 16px 2px; color: var(--ds-subtle); font-size: 11px; }
+.al-record-empty { padding: 14px 16px 16px; color: var(--ds-subtle); font-size: 12px; line-height: 1.6; }
+.al-field { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: center; padding: 7px 0; border-top: 1px solid var(--ds-rule); font-size: 12px; }
+.al-field:first-child { border-top: 0; }
+.al-field dt { color: var(--ds-muted); }
+.al-field dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.al-meter { display: inline-flex; align-items: center; gap: 8px; }
+.al-meter > span { width: 72px; height: 6px; overflow: hidden; border-radius: 3px; background: var(--ds-surface-muted); }
+.al-meter i { display: block; height: 100%; background: var(--ds-chart-primary); }
+.al-pips { display: inline-flex; align-items: center; gap: 3px; }
+.al-pips i { width: 10px; height: 10px; border: 1px solid var(--ds-border); border-radius: 2px; background: var(--ds-surface-muted); }
+.al-pips i.on { border-color: var(--ds-chart-primary); background: var(--ds-chart-primary); }
+.al-pips b { margin-left: 6px; }
+.al-record-foot { display: flex; flex-shrink: 0; justify-content: space-between; gap: 16px; padding: 11px 24px; border-top: 1px solid var(--ds-border); background: white; color: var(--ds-subtle); font-size: 10px; }
+
 @media (max-width: 850px) {
   .al-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .al-record-cols { grid-template-columns: minmax(0, 1fr); }
+  .al-record-kpis { grid-template-columns: 1fr 1fr; }
+  .al-record-kpis > div:nth-child(3) { border-left: 0; }
+  .al-record-kpis > div:nth-child(n+3) { border-top: 1px solid var(--ds-rule); }
 }
 @media (max-width: 550px) {
   .al-brand-name { font-size: 14px; }
@@ -129,4 +204,13 @@ html::-webkit-scrollbar, .al-nav::-webkit-scrollbar { display: none; }
   .al-filters .al-switch button { flex: 1; }
   .al-filters .ds-field select { width: 100%; }
   .al-filters .al-period select { flex: 1; width: auto; min-width: 0; }
+  /* The record fills the screen; the step buttons wrap under the ID. */
+  .ds-dialog.al-record { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; border: 0; border-radius: 0; }
+  .al-record-head { flex-wrap: wrap; padding: 16px; }
+  .al-record-actions { flex-wrap: wrap; }
+  .al-record-body { padding: 14px; }
+  .al-record-foot { padding: 10px 16px; }
+  .al-record-foot span + span { display: none; }
+  .al-emp-toolbar .ds-search, .al-emp-toolbar .ds-search input { flex: 1; width: auto; }
+  .al-emp-foot { flex-direction: row; flex-wrap: wrap; }
 }

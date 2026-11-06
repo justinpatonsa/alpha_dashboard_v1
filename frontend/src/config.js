@@ -1,7 +1,7 @@
 // Identity and navigation. The visual system lives in theme/; this file names things.
 import {
   LayoutDashboard, MapPin, Scale, MessageSquareText, CircleDollarSign,
-  BookOpen, DatabaseZap, ListChecks,
+  BookOpen, DatabaseZap, ListChecks, Users,
 } from 'lucide-react'
 
 export const brand = {
@@ -30,6 +30,8 @@ export const NAV_GROUPS = [
   {
     label: 'Reference',
     items: [
+      { id: 'employees', label: 'Employees', icon: Users,
+        description: 'Every employee record, joined across Alpha\'s four tables and read live. Select a row to see everything on file.' },
       { id: 'discovery', label: 'Data discovery', icon: DatabaseZap,
         description: 'What Alpha\'s database holds, read live. Fills in as soon as access is granted.' },
       { id: 'definitions', label: 'Definitions', icon: BookOpen,
